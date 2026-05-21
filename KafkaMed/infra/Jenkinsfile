@@ -11,7 +11,8 @@ pipeline {
 
         stage('Build Docker') {
             steps {
-                sh '''
+                bat '''
+                cd KafkaMed
                 docker compose build
                 '''
             }
@@ -19,7 +20,8 @@ pipeline {
 
         stage('Levantar servicios') {
             steps {
-                sh '''
+                bat '''
+                cd KafkaMed
                 docker compose up -d
                 '''
             }
@@ -27,7 +29,7 @@ pipeline {
 
         stage('Verificar contenedores') {
             steps {
-                sh '''
+                bat '''
                 docker ps
                 '''
             }
@@ -35,7 +37,7 @@ pipeline {
 
         stage('Probar API') {
             steps {
-                sh '''
+                bat '''
                 curl http://localhost:5000/stats
                 '''
             }
@@ -49,7 +51,7 @@ pipeline {
         }
 
         failure {
-            echo 'Pipeline falló'
+            echo 'Pipeline fallo'
         }
     }
 }
