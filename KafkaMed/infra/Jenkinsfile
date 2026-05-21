@@ -1,0 +1,55 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Clonar repositorio') {
+            steps {
+                echo 'Clonando repositorio desde GitHub...'
+            }
+        }
+
+        stage('Build Docker') {
+            steps {
+                sh '''
+                docker compose build
+                '''
+            }
+        }
+
+        stage('Levantar servicios') {
+            steps {
+                sh '''
+                docker compose up -d
+                '''
+            }
+        }
+
+        stage('Verificar contenedores') {
+            steps {
+                sh '''
+                docker ps
+                '''
+            }
+        }
+
+        stage('Probar API') {
+            steps {
+                sh '''
+                curl http://localhost:5000/stats
+                '''
+            }
+        }
+
+    }
+
+    post {
+        success {
+            echo 'Pipeline ejecutado correctamente'
+        }
+
+        failure {
+            echo 'Pipeline falló'
+        }
+    }
+}
